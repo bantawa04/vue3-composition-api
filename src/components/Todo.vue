@@ -24,6 +24,11 @@
           <div class="border-t border-gray-500 py-2 mt-6">
             Items Left: {{ itemsLeft }}
           </div>
+          <div class="border-t border-gray-500 py-2 mt-1">
+            Mouse X position: {{ x }}
+            <br/>
+            Mouse Y position: {{ y }}
+          </div>
         </div>
         <div v-else class="mt-4">
           Nothing to do! Add a new item...
@@ -34,12 +39,14 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from "vue"
+import { ref, computed, onMounted, watch, onUnmounted } from "vue"
 export default {
   props: ['title'],
   setup(props) {
     const todoFromInput = ref("")
     const todoId = ref(4)
+    const x = ref(0)
+    const y = ref(0)
     const  todos = ref([
         {
           id: 1,
@@ -72,11 +79,20 @@ export default {
       todos.value = todos.value.filter(todo => todo.id !== id)
     }
     
+    function updatePosition(e) {
+      x.value = e.pageX
+      y.value = e.pageY
+    }
     const itemsLeft = computed(() => todos.value.filter(todo => !todo.isComplete).length)
 
     onMounted(() => {
       console.log('Todo mounted')
       console.log(props.title)
+      window.addEventListener("mousemove", updatePosition)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener("mousemove", updatePosition)
     })
 
     watch(
@@ -92,7 +108,9 @@ export default {
         todos,
         addTodo,
         deleteTodo,
-        itemsLeft
+        itemsLeft,
+        x,
+        y
     }
   },
 
