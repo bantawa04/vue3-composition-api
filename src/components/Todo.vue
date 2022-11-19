@@ -4,17 +4,23 @@
       <div class="bg-white shadow-md rounded px-8 py-8">
         <h2 class="text-2xl font-semibold">{{ title }}</h2>
         <form action="#" class="mt-4" @submit.prevent="addTodo">
-          <input v-model="todoFromInput" type="text" class="w-full border border-gray-500 rounded placeholder-gray-600 px-2 py-3" placeholder="What needs to be done?">
+          <input
+            v-model="todoFromInput"
+            type="text"
+            class="w-full border border-gray-500 rounded placeholder-gray-600 px-2 py-3"
+            placeholder="What needs to be done?"
+          />
         </form>
         <div v-if="todos.length">
           <ul class="text-2xl mt-4 space-y-6">
-            <li v-for="todo in todos" :key="todo.id" class="flex items-center justify-between">
+            <li
+              v-for="todo in todos"
+              :key="todo.id"
+              class="flex items-center justify-between"
+            >
               <div class="flex items-center">
-                <input type="checkbox" v-model="todo.isComplete">
-                <div
-                  class="ml-4"
-                  :class="{'line-through' : todo.isComplete}"
-                >
+                <input type="checkbox" v-model="todo.isComplete" />
+                <div class="ml-4" :class="{ 'line-through': todo.isComplete }">
                   {{ todo.description }}
                 </div>
               </div>
@@ -26,13 +32,11 @@
           </div>
           <div class="border-t border-gray-500 py-2 mt-1">
             Mouse X position: {{ x }}
-            <br/>
+            <br />
             Mouse Y position: {{ y }}
           </div>
         </div>
-        <div v-else class="mt-4">
-          Nothing to do! Add a new item...
-        </div>
+        <div v-else class="mt-4">Nothing to do! Add a new item...</div>
       </div>
     </div>
   </div>
@@ -40,30 +44,32 @@
 
 <script>
 import { ref, computed, onMounted, watch, onUnmounted } from "vue"
+import { useMousePosition } from "../utils/mouseposition"
 export default {
-  props: ['title'],
+  props: ["title"],
   setup(props) {
+    const { x, y } = useMousePosition()
     const todoFromInput = ref("")
     const todoId = ref(4)
-    const x = ref(0)
-    const y = ref(0)
-    const  todos = ref([
-        {
-          id: 1,
-          description: 'Finish Screencast',
-          isComplete: false,
-        },
-        {
-          id: 2,
-          description: 'Learn Vue 3',
-          isComplete: false,
-        },
-        {
-          id: 3,
-          description: 'Paint Wall',
-          isComplete: false,
-        },
-      ])
+    // const x = ref(0)
+    // const y = ref(0)
+    const todos = ref([
+      {
+        id: 1,
+        description: "Finish Screencast",
+        isComplete: false,
+      },
+      {
+        id: 2,
+        description: "Learn Vue 3",
+        isComplete: false,
+      },
+      {
+        id: 3,
+        description: "Paint Wall",
+        isComplete: false,
+      },
+    ])
     function addTodo() {
       todos.value.push({
         id: todoId.value,
@@ -72,47 +78,48 @@ export default {
       })
 
       todoId.value++
-      todoFromInput.value = ''
+      todoFromInput.value = ""
     }
 
     function deleteTodo(id) {
-      todos.value = todos.value.filter(todo => todo.id !== id)
+      todos.value = todos.value.filter((todo) => todo.id !== id)
     }
-    
-    function updatePosition(e) {
-      x.value = e.pageX
-      y.value = e.pageY
-    }
-    const itemsLeft = computed(() => todos.value.filter(todo => !todo.isComplete).length)
 
-    onMounted(() => {
-      console.log('Todo mounted')
-      console.log(props.title)
-      window.addEventListener("mousemove", updatePosition)
-    })
+    // function updatePosition(e) {
+    //   x.value = e.pageX
+    //   y.value = e.pageY
+    // }
+    const itemsLeft = computed(
+      () => todos.value.filter((todo) => !todo.isComplete).length
+    )
 
-    onUnmounted(() => {
-      window.removeEventListener("mousemove", updatePosition)
-    })
+    // onMounted(() => {
+    //   console.log('Todo mounted')
+    //   console.log(props.title)
+    //   window.addEventListener("mousemove", updatePosition)
+    // })
+
+    // onUnmounted(() => {
+    //   window.removeEventListener("mousemove", updatePosition)
+    // })
 
     watch(
       () => todoId.value,
       (newValue, oldValue) => {
-        console.log("New value:"+ newValue)
-        console.log("Old value:"+ oldValue)
+        console.log("New value:" + newValue)
+        console.log("Old value:" + oldValue)
       }
-     )
+    )
     return {
-        todoFromInput,
-        todoId,
-        todos,
-        addTodo,
-        deleteTodo,
-        itemsLeft,
-        x,
-        y
+      todoFromInput,
+      todoId,
+      todos,
+      addTodo,
+      deleteTodo,
+      itemsLeft,
+      x,
+      y,
     }
   },
-
 }
 </script>
