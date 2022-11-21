@@ -3,6 +3,20 @@
     <div class="container mx-auto lg:px-64 pt-8">
       <div class="bg-white shadow-md rounded px-8 py-8">
         <h2 class="text-2xl font-semibold">{{ title }}</h2>
+        <div class="space-x-4">
+          <button
+            class="bg-blue-500 text-white font-bold py-2 px-2 rounded-full hover:bg-blue-700"
+            @click="toggleItemsLeft"
+          >
+            Toggle items left
+          </button>
+          <button
+            class="bg-blue-500 text-white font-bold py-2 px-2 rounded-full hover:bg-blue-700"
+            @click="toggleMousePosition"
+          >
+            Toggle mouse position
+          </button>
+        </div>
         <form action="#" class="mt-4" @submit.prevent="addTodo">
           <input
             v-model="todoFromInput"
@@ -27,10 +41,16 @@
               <button @click="deleteTodo(todo.id)">&times;</button>
             </li>
           </ul>
-          <div class="border-t border-gray-500 py-2 mt-6">
+          <div
+            class="border-t border-gray-500 py-2 mt-6"
+            v-if="isItemLeftVisible"
+          >
             Items Left: {{ itemsLeft }}
           </div>
-          <div class="border-t border-gray-500 py-2 mt-1">
+          <div
+            class="border-t border-gray-500 py-2 mt-1"
+            v-if="isMousePositionVisible"
+          >
             Mouse X position: {{ x }}
             <br />
             Mouse Y position: {{ y }}
@@ -48,6 +68,8 @@ import { useMousePosition } from "../utils/mouseposition"
 export default {
   props: ["title"],
   setup(props) {
+    const isItemLeftVisible = ref(true)
+    const isMousePositionVisible = ref(true)
     const { x, y } = useMousePosition()
     const todoFromInput = ref("")
     const todoId = ref(4)
@@ -85,6 +107,13 @@ export default {
       todos.value = todos.value.filter((todo) => todo.id !== id)
     }
 
+    function toggleItemsLeft() {
+      isItemLeftVisible.value = !isItemLeftVisible.value
+    }
+
+    function toggleMousePosition() {
+      isMousePositionVisible.value = !isMousePositionVisible.value
+    }
     // function updatePosition(e) {
     //   x.value = e.pageX
     //   y.value = e.pageY
@@ -119,6 +148,10 @@ export default {
       itemsLeft,
       x,
       y,
+      isItemLeftVisible,
+      isMousePositionVisible,
+      toggleItemsLeft,
+      toggleMousePosition,
     }
   },
 }
