@@ -65,12 +65,17 @@
 <script>
 import { ref, computed, onMounted, watch, onUnmounted } from "vue"
 import { useMousePosition } from "../utils/mouseposition"
+import { useToggle } from "../utils/toggle"
 export default {
   props: ["title"],
   setup(props) {
-    const isItemLeftVisible = ref(true)
-    const isMousePositionVisible = ref(true)
     const { x, y } = useMousePosition()
+    const { isVisible: isItemLeftVisible, toggleVisbible: toggleItemsLeft } =
+      useToggle()
+    const {
+      isVisible: isMousePositionVisible,
+      toggleVisbible: toggleMousePosition,
+    } = useToggle()
     const todoFromInput = ref("")
     const todoId = ref(4)
     // const x = ref(0)
@@ -107,13 +112,13 @@ export default {
       todos.value = todos.value.filter((todo) => todo.id !== id)
     }
 
-    function toggleItemsLeft() {
-      isItemLeftVisible.value = !isItemLeftVisible.value
-    }
+    // function toggleItemsLeft() {
+    //   isItemLeftVisible.value = !isItemLeftVisible.value
+    // }
 
-    function toggleMousePosition() {
-      isMousePositionVisible.value = !isMousePositionVisible.value
-    }
+    // function toggleMousePosition() {
+    //   isMousePositionVisible.value = !isMousePositionVisible.value
+    // }
     // function updatePosition(e) {
     //   x.value = e.pageX
     //   y.value = e.pageY
